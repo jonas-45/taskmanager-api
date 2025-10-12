@@ -6,14 +6,41 @@
 <body>
   <div class="container">
     <h2>Welcome Back</h2>
-    <form action="/login" method="POST">
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
+    <form action="/login" method="POST" id="loginForm">
+      <input type="email" name="email" placeholder="Email" id="email" required />
+      <input type="password" name="password" placeholder="Password" id="password" required />
       <button type="submit">Login</button>
     </form>
     <div class="link">
       <p>Don’t have an account? <a href="/signup">Sign up</a></p>
     </div>
   </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      
+        const loginData = {
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        }
+
+        fetch('/login', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(loginData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+        })
+        .catch(err => {
+            alert(`Error: ${err}`);
+        })
+    })
+  </script>
 </body>
 </html>

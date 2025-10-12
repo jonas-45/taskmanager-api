@@ -3,6 +3,7 @@ import 'dotenv/config';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import userModel from './model/user.js';
+import jwt from 'jsonwebtoken';
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING)
     .then(() => console.log('MongoDB successfully connected'))
@@ -12,12 +13,13 @@ const app = express();
 app.set('view engine', 'ejs');
 
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
 
 const PORT = process.env.PORT;
 
 app.get('/', (req, res) => {
-    res.redirect('./login');
+    res.redirect('/login');
 })
 
 app.get('/signup', (req, res) => {
@@ -53,7 +55,37 @@ app.post('/signup', async (req, res) => {
 })
 
 app.get('/login', (req, res) => {
+    //const {username, password} = req.body;
     res.render('login', {title: 'Login'});
 })
+
+app.post('/login', async (req, res) => {
+    console.log(req.body);
+    const {email, password} = req.body;
+    const user = await userModel.findOne({email});
+
+    try {
+        if(user) {
+            if(await bcrypt.compare(password, user.password)){
+                //Generate jwt tokens
+                const user = {email}
+                const token = jwt.sign(user, process.env.JWT_SECRET);
+
+                res.json({message: 'Password verified', success: true, token})
+            }else {
+                res.json({message: 'Invalid password'})
+            }
+        }else {
+            res.json({message: 'User not defined'})
+        }
+    } catch (error) {
+        res.json({message: `An error occured: ${error}`})
+    }
+    
+})
+
+function verifyToken(req, res, next) {
+    
+}
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

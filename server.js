@@ -71,7 +71,7 @@ app.post('/login', async (req, res) => {
                 const user = {email}
                 const token = jwt.sign(user, process.env.JWT_SECRET);
 
-                res.json({message: 'Password verified', success: true, token})
+                res.json({message: 'Password verified', success: true, token, redirect: '/dashboard'})
             }else {
                 res.json({message: 'Invalid password'})
             }
@@ -82,6 +82,10 @@ app.post('/login', async (req, res) => {
         res.json({message: `An error occured: ${error}`})
     }
     
+})
+
+app.get('/dashboard', verifyToken, (req, res) => {
+    res.render('./views/dashboard.ejs', {title: 'Dashboard | Taskmanager'});
 })
 
 function verifyToken(req, res, next) {

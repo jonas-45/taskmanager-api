@@ -13,4 +13,12 @@ app.get('/', (req, res) => {
     res.send('You are welcome');
 })
 
+app.get('/signup', (req, res) => {
+
+})
+
+app.get('/login', (req, res) => {
+    
+})
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

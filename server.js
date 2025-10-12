@@ -2,6 +2,7 @@ import express from 'express';
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import userModel from './model/user.js';
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING)
     .then(() => console.log('MongoDB successfully connected'))
@@ -25,12 +26,30 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup', async (req, res) => {
     const {name, email, password} = req.body;
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
-    req.body.password = hashedPassword;
 
-    console.log(req.body)
-    res.json({message: 'Your data is successfully saved'});
+    try {
+        //check if user already exists
+        const existingUser = await userModel.findOne({email})
+        if(existingUser) 
+            return res.send({message: 'User already exists', redirect: '/login'})
+
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+        req.body.password = hashedPassword;
+
+        const newUser = new userModel({
+            name,
+            email,
+            password: hashedPassword
+        })
+
+        await newUser.save();
+        console.log(req.body)
+        res.json({message: 'Your data is successfully saved'});
+    } catch (error) {
+        res.json({message: 'registration failed, please try again'});
+    }
+    
 })
 
 app.get('/login', (req, res) => {

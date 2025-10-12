@@ -85,6 +85,20 @@ app.post('/login', async (req, res) => {
 })
 
 function verifyToken(req, res, next) {
+    const authHeaders = req.headers['authorization'];
+    const token = authHeaders && authHeaders.split(' ')[1];
+
+    if (!token)
+        res.statu(401).json({message: 'Access denied, no token provided'})
+
+    try {
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = user;
+        next();
+    } catch (error) {
+        res.status(403).json({message: 'Invalid or expired token'});
+    }
+
     
 }
 

@@ -84,8 +84,8 @@ app.post('/login', async (req, res) => {
     
 })
 
-app.get('/dashboard', verifyToken, (req, res) => {
-    res.render('./views/dashboard.ejs', {title: 'Dashboard | Taskmanager'});
+app.get('/dashboard', (req, res) => {
+    res.render('./views/dashboard.ejs', {title: 'Dashboard | Taskmanager', email: req.user.email});
 })
 
 function verifyToken(req, res, next) {
@@ -93,7 +93,7 @@ function verifyToken(req, res, next) {
     const token = authHeaders && authHeaders.split(' ')[1];
 
     if (!token)
-        res.statu(401).json({message: 'Access denied, no token provided'})
+        res.status(401).json({message: 'Access denied, no token provided'})
 
     try {
         const user = jwt.verify(token, process.env.JWT_SECRET);

@@ -33,5 +33,38 @@
     </ul>
   </div>
 
+  <script>
+    const taskForm = document.getElementById("taskForm");
+    taskForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const newTask = {
+        title: document.getElementById("taskName").value,
+        description: document.getElementById("taskDescription").value,
+        priorty: document.getElementById("taskPriority").value,
+        duedate: document.getElementById("dueDate").value
+      }
+
+      fetch('/add', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify(newTask)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if(data.success) {
+          alert(data.message);
+          return;
+        }
+        alert(data.message + " : what error?")
+      })
+      .catch(err => alert("Error: " + err))
+    });
+
+  </script>
+
 </body>
 </html>

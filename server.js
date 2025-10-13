@@ -68,7 +68,6 @@ app.post('/login', async (req, res) => {
         if(user) {
             if(await bcrypt.compare(password, user.password)){
                 //Generate jwt tokens
-                const user = {email}
                 const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET);
 
                 res.json({message: 'Password verified', success: true, token, redirect: `/dashboard?email=${email}`})
@@ -85,6 +84,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/add', verifyToken, async (req, res) => {
+    console.log("Decoded user:", req.user);
     try {
         const {title, description, priorty, duedate} = req.body;
         const newTask = new taskModel({
@@ -98,6 +98,7 @@ app.post('/add', verifyToken, async (req, res) => {
         await newTask.save()
         res.status(201).json({success: true, message: 'task sucessfully saved'})
     } catch (error) {
+        console.log(error);
         res.status(500).json({success: false, message: 'Error creating task', error})
     }
 
@@ -111,15 +112,18 @@ function verifyToken(req, res, next) {
     const authHeaders = req.headers['authorization'];
     const token = authHeaders && authHeaders.split(' ')[1];
 
-    if (!token)
-        res.status(401).json({message: 'Access denied, no token provided'})
+    if (!token){
+        console.log('no token provided');
+        return res.status(401).json({message: 'Access denied, no token provided'})
+    }
 
     try {
+        console.log(`token provided: ${token}`);
         const user = jwt.verify(token, process.env.JWT_SECRET);
         req.user = user;
         next();
     } catch (error) {
-        res.status(403).json({message: 'Invalid or expired token'});
+        return res.status(403).json({message: 'Invalid or expired token'});
     }
 
     

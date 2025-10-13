@@ -1,12 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title><%= title %></title>
-  <link rel="stylesheet" href="dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager Dashboard</title>
+  <link href="https://unpkg.com/lucide-static/font/lucide.css" rel="stylesheet">
+  <link href="dashboard.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Welcome <%= email %> 🎉</h1>
-  <p>You’ve successfully logged in!</p>
+  
+  <div class="container">
+    <h1>My Task Manager 1.0</h1>
+
+    <!-- Add Task Form -->
+    <form id="taskForm">
+      <input type="text" id="taskName" placeholder="Task title" required /><br>
+      <select id="taskPriority" required>
+        <option value="">Priority</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select><br>
+      <input type="date" id="dueDate" required /><br>
+      <textarea id="taskDescription" placeholder="Task description..." rows="2" required></textarea><br>
+
+      <button type="submit">Add Task</button>
+    </form>
+
+    <!-- Task List -->
+    <ul id="taskList">
+      <li class="empty">No tasks added yet</li>
+    </ul>
+  </div>
+
 </body>
 </html>

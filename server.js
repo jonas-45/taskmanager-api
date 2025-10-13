@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import userModel from './model/user.js';
 import jwt from 'jsonwebtoken';
+import taskModel from './model/task.js';
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING)
     .then(() => console.log('MongoDB successfully connected'))
@@ -68,7 +69,7 @@ app.post('/login', async (req, res) => {
             if(await bcrypt.compare(password, user.password)){
                 //Generate jwt tokens
                 const user = {email}
-                const token = jwt.sign(user, process.env.JWT_SECRET);
+                const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET);
 
                 res.json({message: 'Password verified', success: true, token, redirect: `/dashboard?email=${email}`})
             }else {
@@ -81,6 +82,25 @@ app.post('/login', async (req, res) => {
         res.json({message: `An error occured: ${error}`})
     }
     
+});
+
+app.post('/add', verifyToken, async (req, res) => {
+    try {
+        const {title, description, priorty, duedate} = req.body;
+        const newTask = new taskModel({
+            title,
+            description,
+            priorty,
+            duedate,
+            createdBy: req.user.userId
+        });
+
+        await newTask.save()
+        res.status(201).json({success: true, message: 'task sucessfully saved'})
+    } catch (error) {
+        res.status(500).json({success: false, message: 'Error creating task', error})
+    }
+
 })
 
 app.get('/dashboard', (req, res) => {

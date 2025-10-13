@@ -1,6 +1,99 @@
 body {
-      font-family: Arial;
-      background: #f0f2f5;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-top: 50px;
+      padding: 30px;
+    }
+
+    h1 {
       text-align: center;
-      padding-top: 100px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .task {
+      background-color: #fafafa;
+      margin-bottom: 10px;
+      padding: 10px 15px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 5px solid #007bff;
+    }
+
+    .task p {
+      margin: 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .actions button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      color: #555;
+      transition: color 0.3s;
+    }
+
+    .actions button:hover {
+      color: #007bff;
+    }
+
+    .empty {
+      text-align: center;
+      color: #aaa;
+      font-style: italic;
     }

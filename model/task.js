@@ -18,8 +18,13 @@ const taskSchemer = new Scheme({
     description: {
         type: String,
     },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
     completedAt: {type: Date}
-});
+}, {timestamps: true});
 
 const taskModel = mongoose.model('task', taskSchemer);
 

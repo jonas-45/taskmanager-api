@@ -60,7 +60,6 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/login', async (req, res) => {
-    console.log(req.body);
     const {email, password} = req.body;
     const user = await userModel.findOne({email});
 
@@ -71,7 +70,7 @@ app.post('/login', async (req, res) => {
                 const user = {email}
                 const token = jwt.sign(user, process.env.JWT_SECRET);
 
-                res.json({message: 'Password verified', success: true, token, redirect: '/dashboard'})
+                res.json({message: 'Password verified', success: true, token, redirect: `/dashboard?email=${email}`})
             }else {
                 res.json({message: 'Invalid password'})
             }
@@ -85,7 +84,7 @@ app.post('/login', async (req, res) => {
 })
 
 app.get('/dashboard', (req, res) => {
-    res.render('./views/dashboard.ejs', {title: 'Dashboard | Taskmanager', email: req.user.email});
+    res.render('dashboard.ejs', {title: 'Dashboard | Taskmanager', email: req.query.email});
 })
 
 function verifyToken(req, res, next) {

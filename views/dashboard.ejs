@@ -53,7 +53,14 @@
         },
         body: JSON.stringify(newTask)
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if(!response.ok) {
+          window.location.href = "/login";
+          return;
+        }
+
+        return response.json();
+      })
       .then((data) => {
         if(data.success) {
           alert(data.message);
@@ -63,6 +70,45 @@
       })
       .catch(err => alert("Error: " + err))
     });
+
+
+    //display tasks
+    window.addEventListener('load', () => {
+      const token = localStorage.getItem("token");
+      console.log(`token is: ${token}`);
+      if(!token){
+        window.location.href = "/login";
+        return;
+      }
+
+      const myTasks = loadTask(token);
+
+    })
+
+    //load task function
+    const loadTask = async (token) => {
+      try{
+        const res = await fetch("/tasks", {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+        if(!res.ok) {
+          window.location.href = "/login";
+          return;
+        }
+        const results = await res.json();
+
+        console.log(results);
+        return results;
+
+      }catch(error) {
+        console.log(error);
+      }
+    
+    }
 
   </script>
 

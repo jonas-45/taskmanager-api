@@ -68,9 +68,9 @@ app.post('/login', async (req, res) => {
         if(user) {
             if(await bcrypt.compare(password, user.password)){
                 //Generate jwt tokens
-                const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET);
+                const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '2m'});
 
-                res.json({message: 'Password verified', success: true, token, redirect: `/dashboard?email=${email}`})
+                res.json({message: 'Password verified', success: true, token, redirect: "/dashboard" })
             }else {
                 res.json({message: 'Invalid password'})
             }
@@ -104,8 +104,15 @@ app.post('/add', verifyToken, async (req, res) => {
 
 })
 
+app.get('/tasks', verifyToken, async (req, res) => {
+    const id = req.user.userId;
+    const tasks = await taskModel.find({createdBy: req.user.userId});
+    console.log(tasks);
+    res.status(201).json(tasks);
+})
+
 app.get('/dashboard', (req, res) => {
-    res.render('dashboard.ejs', {title: 'Dashboard | Taskmanager', email: req.query.email});
+    res.status(201).render('dashboard.ejs', {title: 'Dashboard | Taskmanager', email: req.query.email});
 })
 
 function verifyToken(req, res, next) {

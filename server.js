@@ -108,7 +108,7 @@ app.get('/tasks', verifyToken, async (req, res) => {
     const id = req.user.userId;
     const tasks = await taskModel.find({createdBy: req.user.userId});
     console.log(tasks);
-    res.status(201).json(tasks);
+    res.status(201).json({success: true, tasks});
 })
 
 app.get('/dashboard', (req, res) => {

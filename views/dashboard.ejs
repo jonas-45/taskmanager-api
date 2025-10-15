@@ -28,9 +28,24 @@
     </form>
 
     <!-- Task List -->
-    <ul id="taskList">
-      <li class="empty">No tasks added yet</li>
-    </ul>
+    <div id="taskList">
+      <h1>My Tasks List</h1>
+
+      <table id="taskTable">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="taskTableBody">
+          <!-- tasks will be dynamically loaded here -->
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script>
@@ -73,7 +88,7 @@
 
 
     //display tasks
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
       const token = localStorage.getItem("token");
       console.log(`token is: ${token}`);
       if(!token){
@@ -81,7 +96,35 @@
         return;
       }
 
-      const myTasks = loadTask(token);
+      const data = await loadTask(token);
+      const tableBody = document.getElementById("taskTableBody");
+
+      if(!data.success || data.tasks.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No tasks found</td></tr>`;
+        return;
+      }
+
+      data.tasks.forEach((task) => {
+        const row = document.createElement("tr");
+
+        const priortyClass = 
+        task.priorty == "high" ? "priority-high" : 
+        task.priorty == "medium" ? "priority-medium" : "priority-low";
+
+          row.innerHTML = `
+            <td>${task.title}</td>
+            <td>${task.description}</td>
+            <td class="${priortyClass}">${task.priorty}</td>
+            <td>${new Date(task.duedate).toLocaleDateString()}</td>
+            <td class="actions">
+              <button>Edit</button>
+              <button>Mark completed</button>
+              <button class="delete">Delete</button>
+            </td>
+          `
+
+          tableBody.appendChild(row);
+        })
 
     })
 
